@@ -1,4 +1,6 @@
 <?php
+//header("Access-Control-Allow-Origin: *");
+
 require 'config.php';
 require 'Slim/Slim.php';
 
@@ -239,8 +241,8 @@ function saveOrder(){
                 
                 $stmt1->execute(array($description,$user_id,$userEmployee_id,$created,$latLng));
             }
-          
-            $orderData = internalOrderDetails($data->userClient_id);
+            
+            $orderData = internalOrderDetails($data->userClient_id,$finishedTime);
             if(!empty($orderData))
             {
                 if(!$userEmployee_id){
@@ -262,7 +264,7 @@ function saveOrder(){
                 if($productOrder){
                         $orderData->products = $productOrder;
                 }
-                echo '{"order": ' .json_encode($orderData) . '}';
+                echo '{"orderResponse": ' .json_encode($orderData) . '}';
             }else{
                 echo '{"error":{"text":"Orden não encontrado"}}';
             }
@@ -306,7 +308,7 @@ function deleteOrder(){
            $stmt1->execute(array($orderId));
            
           
-            $orderData = internalOrderDetails($data->userClient_id);
+            $orderData = internalOrderDetails($data->userClient_id,"0");
             if(empty($orderData))
             {
                 echo '{"status": {"text":"Orden deletado"}}';
@@ -437,14 +439,13 @@ function internalUserDetails($input) {
     
 }
 
-function internalOrderDetails($input) {
+function internalOrderDetails($input,$time) {
     
     try {
         $db = getDB();
-        $sql = "SELECT * FROM orders WHERE userClient_id=:input and finishedTime=0 ";
+        $sql = "SELECT * FROM orders WHERE userClient_id=? and finishedTime=? ";
         $stmt = $db->prepare($sql);
-        $stmt->bindParam("input", $input,PDO::PARAM_STR);
-        $stmt->execute();
+        $stmt->execute(array($input,$time));
         $orderDetails = $stmt->fetch(PDO::FETCH_OBJ);
         $db = null;
         return $orderDetails;
