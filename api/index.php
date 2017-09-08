@@ -246,13 +246,17 @@ function saveOrder(){
             if(!empty($orderData))
             {
                 if(!$userEmployee_id){
+                    foreach($data->deletedProducts as $value){
+                     $stmt1 = $db->prepare("DELETE FROM productOrder WHERE id=?;");
+                     $stmt1->execute(array($value->id));   
+                    }
                     foreach($data->products as $value){
                       if($value->id){
                           $stmt1 = $db->prepare("UPDATE productOrder SET amount=? where id=?;");
                           $stmt1->execute(array($value->amount,$value->id));
                        }else{
                           $stmt1 = $db->prepare("INSERT INTO productOrder(orderId,productId,amount)VALUES(?,?,?);");
-                           $stmt1->execute(array($orderData->id,$value->productId,$value->amount));
+                          $stmt1->execute(array($orderData->id,$value->productId,$value->amount));
                        }
                    
                     }
