@@ -9,6 +9,7 @@ $app = new \Slim\Slim();
 
 $app->post('/login','login'); /* User login */
 $app->post('/signup','signup'); /* User Signup  */
+$app->post('/editUser','editUser'); /* User Edit User  */
 $app->post('/feed','feed'); /* User Feeds  */
 $app->post('/feedUpdate','feedUpdate'); /* User Feeds  */
 $app->post('/feedDelete','feedDelete'); /* User Feeds  */
@@ -121,6 +122,46 @@ function signup() {
         }
         else{
             echo '{"error":{"text":"Enter valid data"}}';
+        }
+    }
+    catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function editUser(){
+    $request = \Slim\Slim::getInstance()->request();
+    $data = json_decode($request->getBody());
+    $email=$data->email;
+    $name=$data->name;
+    $username=$data->username;
+        try {
+        
+        $username_check = preg_match('~^[A-Za-z0-9_]{3,20}$~i', $username);
+        $emain_check = preg_match('~^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.([a-zA-Z]{2,4})$~i', $email);
+        
+        if (strlen(trim($username))>0 && strlen(trim($email))>0 && $emain_check>0 && $username_check>0)
+        {
+            $db = getDB();
+         
+            /*Inserting user values*/
+            $sql1="UPDATE users SET username=?,email=?,name=?,permissionType=?,address=?,latLng=?,complement=? where user_id=?;";
+            $stmt1 = $db->prepare($sql1);
+            $stmt1->execute(array($username,$email,$name,$data->permissionType,$data->address,$data->latLng,$data->complement,$data->user_id));
+                
+            $userData=internalUserDetails($email);
+                
+            if($userData){
+                $userData = json_encode($userData);
+                echo '{"userData": ' .$userData . '}';
+            } else {
+                echo '{"error":{"text":"Erro ao salvar usuario"}}';
+            }
+          
+            $db = null;
+        }
+        else{
+            echo '{"error":{"text":"Entre com campos validos"}}';
         }
     }
     catch(PDOException $e) {
