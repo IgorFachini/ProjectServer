@@ -99,10 +99,10 @@ function signup() {
             {
                 
                 /*Inserting user values*/
-                $sql1="INSERT INTO users(username,password,email,name,userType,permissionType,address,latLng,complement,cpf,cnpj)VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                $sql1="INSERT INTO users(username,password,email,name,userType,permissionType,address,latLng,complement,cpf,cnpj,phone)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
                 $stmt1 = $db->prepare($sql1);
                 $password=hash('sha256',$data->password);
-                $stmt1->execute(array($username,$password,$email,$name,$data->userType,$data->permissionType,$data->address,$data->latLng,$data->complement,$data->cpf,$data->cnpj));
+                $stmt1->execute(array($username,$password,$email,$name,$data->userType,$data->permissionType,$data->address,$data->latLng,$data->complement,$data->cpf,$data->cnpj,$data->phone));
                 
                 $userData=internalUserDetails($email);
                 
@@ -145,9 +145,9 @@ function editUser(){
             $db = getDB();
          
             /*Inserting user values*/
-            $sql1="UPDATE users SET username=?,email=?,name=?,permissionType=?,address=?,latLng=?,complement=?,cpf=?,cnpj=? where user_id=?;";
+            $sql1="UPDATE users SET username=?,email=?,name=?,permissionType=?,address=?,latLng=?,complement=?,cpf=?,cnpj=?,phone=? where user_id=?;";
             $stmt1 = $db->prepare($sql1);
-            $stmt1->execute(array($username,$email,$name,$data->permissionType,$data->address,$data->latLng,$data->complement,$data->cpf,$data->cnpj,$data->user_id));
+            $stmt1->execute(array($username,$email,$name,$data->permissionType,$data->address,$data->latLng,$data->complement,$data->cpf,$data->cnpj,$data->phone,$data->user_id));
                 
             $userData=internalUserDetails($email);
                 
