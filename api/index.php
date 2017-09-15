@@ -15,6 +15,7 @@ $app->post('/feedUpdate','feedUpdate'); /* User Feeds  */
 $app->post('/feedDelete','feedDelete'); /* User Feeds  */
 //$app->post('/userDetails','userDetails'); /* User Details */
 $app->post('/getUserById','getUserById');
+$app->post('/users','users'); /* Get users  */
 $app->post('/orders','orders');
 $app->post('/saveOrder','saveOrder');
 $app->post('/deleteOrder','deleteOrder');
@@ -166,6 +167,41 @@ function editUser(){
     }
     catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function users(){
+    $request = \Slim\Slim::getInstance()->request();
+    $data = json_decode($request->getBody());
+    $user_id=$data->user_id;
+    $token=$data->token;
+    
+    $systemToken=apiToken($user_id);
+    
+    if($systemToken == $token){
+    try {
+            $db = getDB();
+            $sql = "SELECT user_id,name,username FROM users";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $userData = $stmt->fetchAll(PDO::FETCH_OBJ);
+            
+            if(!empty($userData))
+            {
+                echo '{"users": ' .json_encode($userData) . '}';
+            }else{
+                echo '{"error":{"text":"Nao existe usuarios"}}';
+            }
+           
+            $db = null;;
+            
+        
+       
+        } catch(PDOException $e) {
+            echo '{"error":{"text":"'. $e->getMessage() .'"}}';
+        }
+    } else{
+        echo '{"error":{"text":"No access"}}';
     }
 }
 
