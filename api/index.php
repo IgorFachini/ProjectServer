@@ -23,6 +23,8 @@ $app->post('/saveOrder','saveOrder');
 $app->post('/deleteOrder','deleteOrder');
 $app->post('/getOrderByIdClient','getOrderByIdClient');
 $app->post('/products','products');
+$app->post('/saveProduct','saveProduct');
+$app->post('/deleteProduct','deleteProduct');
 $app->post('/test','test');
 
 
@@ -183,7 +185,7 @@ function users(){
     if($systemToken == $token){
     try {
             $db = getDB();
-            $sql = "SELECT user_id,name,username FROM users";
+            $sql = "SELECT user_id,name,username,email,phone,address,userType FROM users";
             $stmt = $db->prepare($sql);
             $stmt->execute();
             $userData = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -537,6 +539,95 @@ function products(){
     }
 }
 
+function saveProduct(){
+   $request = \Slim\Slim::getInstance()->request();
+   $dataResponse = json_decode($request->getBody());
+ 
+   $data = $dataResponse->product;
+   $dataUser = $dataResponse->crendential;
+
+   $user_id=$dataUser->user_id;
+   $token=$dataUser->token;
+    
+   $systemToken=apiToken($user_id);
+    
+    if($systemToken == $token){
+   
+    $productId=$data->id;
+    try {
+           $db = getDB();
+           if($productId){
+               $stmt1 = $db->prepare("UPDATE product SET title=?,description=?,stock=?,price=? WHERE id=?");
+               $stmt1->execute(array($data->title,$data->description,$data->stock,$data->price,$productId));
+           }else{
+               $stmt1 = $db->prepare("INSERT INTO product(title,description,stock,price)VALUES(?,?,?,?);");
+               $stmt1->execute(array($data->title,$data->description,$data->stock,$data->price));
+           }
+          
+            $productData = internalProductDetails($data->title);
+            if(!empty($productData))
+            {
+                echo '{"product": '.json_encode($productData) .'}';
+            }else{
+                echo '{"error":{"text":"Erro ao salvar produto"}}';
+            }
+           
+            $db = null;;
+            
+        
+       
+        } catch(PDOException $e) {
+            echo '{"error":{"text":"'. $e->getMessage() .'"}}';
+        }
+    } else{
+        echo '{"error":{"text":"No access"}}';
+    }
+}
+
+
+function deleteProduct(){
+  $request = \Slim\Slim::getInstance()->request();
+   $dataResponse = json_decode($request->getBody());
+ 
+   $dataUser = $dataResponse->crendential;
+
+   $user_id=$dataUser->user_id;
+   $token=$dataUser->token;
+    
+   $systemToken=apiToken($user_id);
+    
+    if($systemToken == $token){
+   
+    try {
+           $db = getDB();
+       
+            $stmt1 = $db->prepare("DELETE FROM product WHERE id=?");
+            $stmt1->execute(array($dataResponse->productId));
+        
+          
+            $productData = internalProductDetails($data->title);
+            if(empty($productData))
+            {
+                echo '{"status":{"text":"Produto deletado com sucesso."}}';
+            }else{
+                echo '{"error":{"text":"Erro ao deletar produto."}}';
+            }
+           
+            $db = null;;
+            
+        
+       
+        } catch(PDOException $e) {
+            echo '{"error":{"text":"'. $e->getMessage() .'"}}';
+        }
+    } else{
+        echo '{"error":{"text":"No access"}}';
+    }
+}
+
+
+
+
 /* ### internal Username Details ### */
 function internalUserDetails($input) {
     
@@ -573,6 +664,27 @@ function internalOrderDetails($input,$time) {
     }
     
 }
+
+
+function internalProductDetails($input){
+      try {
+        $db = getDB();
+        $sql = "SELECT * FROM product WHERE title=?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($input));
+        $productDetails = $stmt->fetch(PDO::FETCH_OBJ);
+        $db = null;
+        return $productDetails;
+        
+    } catch(PDOException $e) {
+        echo '{"error":{"text":"'. $e->getMessage() .'"}}';
+    }
+    
+}
+
+
+
+
 
 function feed(){
     $request = \Slim\Slim::getInstance()->request();
