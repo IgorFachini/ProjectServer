@@ -24,10 +24,12 @@ Funcionário: Ele verá no mapa todos pedidos que não foram atendidos e o que e
 
 # Acessando funções do projeto,
 
-Com Postman(Chrome) ou chamadas HTTP, poderá realizar requisições para ( http://localhost:(80 -> com XAMPP ou 9000 com PHP)/ProjectServer/api/ ) + Tipo.
-ATENCAO: Todas o conteúdo de todas as requisições deve ser feito em formato JSON, e retorno de todas as funções será em JSON.
+Com Postman(Chrome) ou chamadas HTTP, poderá realizar requisições para (` http://localhost:(80 -> com XAMPP ou 9000 com PHP)/ProjectServer/api/ `) + Tipo.
 
-### Ex de função de login em JS: Com AJAX: </br>
+ATENCAO: Todas o conteúdo de todas as requisições deve ser feito em formato JSON, e retorno de todas as funções será em JSON, tirando login e cadastro, as demais Funções  devem ser enviadas as credenciais junto a Requisição .
+
+### Ex de função global Com AJAX:
+
 ```js
 let urlServe = "http://localhost:9000/ProjectServer/api/"
 
@@ -36,6 +38,10 @@ function sendOperation(data, type) {
         JSON.stringify(data),
         function (data, status) {});
 }
+```
+
+### Ex de função de login: </br>
+```js
 var values = {"username":"fc1", "password": "admin123"};
 
 sendOperation(values, "login").then((result) => {
@@ -51,7 +57,7 @@ sendOperation(values, "login").then((result) => {
 });;
 
 ```
-Retorno do Serve:
+Retorno do Server:
 
 Logado -> 
 ```js
@@ -83,5 +89,48 @@ Erro ->
     }
 }
 ```
-
 ====
+
+### Ex de cadastro de produtos:
+```js
+let credentials = {
+    user_id: "5",
+    token: "cb76fce66298afc035ae29ff6fc6a985ac8b7c0b521b6d1939226afd78b2c6ef",
+}
+
+function saveProduct(productValue){
+    let sendData = {crendential: credentials, product:productValue}
+    return new Promise((resolve, reject) => {
+        sendOperation(sendData, "saveProduct").fail(function (xhr, status, error) {
+            console.log("saveProduct status", status);
+            reject(status);
+        }).done(function (resposeData, d2, d3) {
+            console.log("saveProduct", resposeData);
+            if (resposeData.product) {
+                console.log("produto salvo");
+            } else {
+                console.log("No access");
+            }
+            resolve(resposeData);
+        });
+    });
+}
+//Chamando a funçao
+
+var productValuesForm = {};
+//Pega todos os input do form que contem name
+$.each($('#productForm').serializeArray(), function (_, kv) {
+    productValuesForm[kv.name] = kv.value;
+});
+saveProduct(productValuesForm).then(responseData => {
+    if (responseData.product) {
+        console.log("salvo");
+        getProducts(responseData.product.id);
+    } else {
+        console.log("No acess");
+    }
+}, (err) => {
+    console.log("No connection");
+});
+```
+
