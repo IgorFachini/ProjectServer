@@ -7,8 +7,8 @@ session_start();
 define('DB_SERVER', 'localhost');
 define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
-define('DB_DATABASE', 'uaudeco_project');
-define("BASE_URL", "http://localhost/ProjectServer/api/");
+define('DB_DATABASE', 'project');
+define("BASE_URL", "localhost:80/ProjectServe/api/");
 define("SITE_KEY", 'yourSecretKey');
 
 
