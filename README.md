@@ -12,7 +12,7 @@ Uma pessoa qualquer pede um produto, seu pedido e sua localização é salva, um
 ## Como funciona:
 Cliente: O cliente irá realizar um pedido que conterá N produtos, sua localização e hora atual será armazenada junto com o pedido para entrega futura, enquanto não for atendido, ele poderá modificar o pedido ou cancelar, depois de ser atendido e o produto entregue ao cliente, o pedido ficara armazenado no histórico do cliente.
 
-Funcionário: Ele verá no mapa todos pedidos que não foram atendidos e o que ele está atendendo, ao aceitar um pedido, sua hora atual será salva no pedido e o pedido será colocado em atendimento por ele e sumira da vista de outros funcionários, nesse tempo ele pode cancelar a finalizar a entrega do pedido (se estiver próximo ao local de entrega), quando finalizado a entrega, a sua hora atual é gravada ao pedido e colocado como histórico.
+Funcionário: Ele verá no mapa todos pedidos que não foram atendidos e o que ele está atendendo, ao aceitar um pedido, sua hora atual será salva no pedido e o pedido será colocado em atendimento por ele e sumira da vista de outros funcionários, nesse tempo ele pode cancelar ou finalizar a entrega do pedido (se estiver próximo ao local de entrega), quando finalizado a entrega, a sua hora atual é gravada ao pedido e colocado como histórico.
 
 
 
