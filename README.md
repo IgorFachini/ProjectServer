@@ -26,7 +26,7 @@ Funcionário: Ele verá no mapa todos pedidos que não foram atendidos e o que e
 
 Com Postman(Chrome) ou chamadas HTTP, poderá realizar requisições para (` http://localhost:(80 -> com XAMPP ou 9000 com PHP)/ProjectServer/api/ `) + Tipo.
 
-ATENCAO: Todo conteúdo de todas as requisições deve ser feito em formato JSON, e retorno de todas as funções será em JSON, tirando login e cadastro, as demais Funções  devem ser enviadas as credenciais junto a Requisição .
+ATENÇÃO: Todo conteúdo de todas as requisições deve ser feito em formato JSON, o retorno de todas as funções é em JSON, tirando login e cadastro, as demais Funções  devem ser enviadas as credenciais junto a Requisição .
 
 ### Ex de função global Com AJAX:
 
